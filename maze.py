@@ -45,7 +45,7 @@ print(m.solveAi("ucs"))
 print(m.solveAi("astar"))
 
 # animate solution bath defualt is astar
-m.animate()
+# m.animate()
 
 # solve by hand
 # m.solveManual()

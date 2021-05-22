@@ -1,19 +1,22 @@
-from mazeHelpers import checkGoal, getSourceState, generateStates, printMaze, Move, showDemo, humanSolve
+from mazeHelpers import checkGoal, getSourceState, generateStates, printMaze, Move, showDemo, humanSolve, generateMaze
 from searchAlgos import solve
 
 class Maze:
-    def __init__(self, maze, checkGoal=checkGoal, generateStates=generateStates, heuristic=None) -> None:
-        self.maze = maze
+    '''
+        A wraper around the search algorithms and the utillity fns
+    '''
+    def __init__(self, dimension, checkGoal=checkGoal, generateStates=generateStates, heuristic=None) -> None:
+        self.maze = generateMaze(dimension)
         self.checkGoal = checkGoal
         self.generateStates = generateStates
         self.heuristic = heuristic
-        self.startState = getSourceState(maze)
+        self.startState = getSourceState(self.maze)
 
     def printMaze(self):
         return printMaze(self.maze)
     
     def solveAi(self, algo="astar"):
-        return solve(maze, self.startState, self.checkGoal, self.generateStates, algo=algo, heuristic=self.heuristic)
+        return solve(self.maze, self.startState, self.checkGoal, self.generateStates, algo=algo, heuristic=self.heuristic)
 
     def solveManual(self):
         return humanSolve(self.maze)
@@ -27,25 +30,25 @@ class Maze:
         return mazeAndNewCost
 
 
-# maze = generateMaze()
-maze = [
-["v", "X", "X", "X", " "],
-[" ", " ", " ", " ", " "],
-[" ", " ", " ", "X", " "],
-[" ", "X", " ", "X", " "],
-[" ", "X", "X", "X", "#"]
-]
+# sampleMaze = [
+# ["v", "X", "X", "X", " "],
+# [" ", " ", " ", " ", " "],
+# [" ", " ", " ", "X", " "],
+# [" ", "X", " ", "X", " "],
+# [" ", "X", "X", "X", "#"]
+# ]
 
 
-m = Maze(maze)
-print(m.solveAi("dfs"))
-print(m.solveAi("bfs"))
-print(m.solveAi("greedy"))
-print(m.solveAi("ucs"))
-print(m.solveAi("astar"))
+m = Maze(15)
+# print(m.solveAi("dfs"))
+# print(m.solveAi("bfs"))
+# print(m.solveAi("greedy"))
+# print(m.solveAi("ucs"))
+# print(m.solveAi("astar"))
 
 # animate solution bath defualt is astar
-# m.animate()
+m.animate()
 
 # solve by hand
 # m.solveManual()
+

@@ -1,8 +1,6 @@
 from collections import deque
 from heapq import heapify, heappop, heappush
 
-# import the euclideanDistance to use as the defualt heuristic
-from mazeHelpers import euclideanDistance
 class stateNode(object):
     def __init__(self, position, direction, path=[], cost=0) -> None:
         super().__init__()
@@ -24,12 +22,13 @@ class stateNode(object):
     def __str__(self) -> str:
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
 
+from mazeHelpers import euclideanDistance
 def solve(maze, initail_state, is_goal, next_state, algo="astar", heuristic=None):
     algos = {"astar": astar, "dfs": dfs, "bfs": bfs, "ucs":ucs, "greedy": greedy}
     if heuristic:
-        return algos[algo](maze, initail_state, is_goal, next_state, heuristic) if algo in algos else "Failure"
+        return algos[algo](maze, initail_state, is_goal, next_state, heuristic) if algo in algos else  {"Fail": "cant reach goal state"}
 
-    return algos[algo](maze, initail_state, is_goal, next_state) if algo in algos else "Failure"
+    return algos[algo](maze, initail_state, is_goal, next_state) if algo in algos else  {"Fail": "cant reach goal state"}
 
 def bfs(maze, initail_state, is_goal, generateStates):
     # fringe is now a doubly linkedList
@@ -45,7 +44,8 @@ def bfs(maze, initail_state, is_goal, generateStates):
             visited[current_state] = True
         for newState in generateStates(maze, current_state):
             fringe.append(newState)
-    return "Failure: Failed To reach Goal"
+
+    return {"Fail": "cant reach goal state"}
 
 def dfs(maze, initail_state, is_goal, generateStates):
     fringe, visited = [], {}
@@ -61,7 +61,8 @@ def dfs(maze, initail_state, is_goal, generateStates):
             visited[current_state] = True
         for newState in generateStates(maze, current_state):
             fringe.append(newState)
-    return "Failure: Failed To reach Goal"
+            
+    return {"Fail": "cant reach goal state"}
 
 def ucs(maze, initail_state, is_goal, generateStates):
     '''Minimize on the Cost (defualt)'''
@@ -94,4 +95,4 @@ def bestFirst(maze, initail_state, is_goal, generateStates, f = lambda self, oth
             visited[current_state] = True
         for newState in generateStates(maze, current_state):
             heappush(fringe, newState)
-    return "Failure: Failed To reach Goal"
+    return {"Fail": "cant reach goal state"}

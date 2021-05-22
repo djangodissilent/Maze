@@ -1,32 +1,4 @@
-class stateNode(object):
-    def __init__(self, position, direction, path=[], cost=0) -> None:
-        self.position = position
-        self.direction = direction
-        self.path = path
-        self.cost = cost
-
-    def __lt__(self, other) -> bool:
-        return self.cost < other.cost
-
-    def __hash__(self) -> int:
-        return hash((self.position, self.direction))
-
-    def __eq__(self, other) -> bool:
-        return (self.position, self.direction) == (other.position,
-                                                   other.direction)
-
-    def __str__(self) -> str:
-        return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
-
-# TODO
-def generateMaze(n):
-    ''' generate random new maze & return the generated maze'''
-    pass
-
-# TODO
-def displayMaze(maze):
-    '''  Display maze to console or through a gui '''
-    pass
+import random
 
 def checkGoal(maze, state):
     ''' check if the current state position is the goal '''
@@ -34,43 +6,14 @@ def checkGoal(maze, state):
     return maze[pos[0]][pos[1]] == "#"
 
 
-def generateStates(maze, oldState):
+# return Euclidean distance to target from state position
+def euclideanDistance(maze, state):
     '''
-    Generates new states based on the current state and the maze
+    retrun the Euclidean Distance distance between a state and the target
     '''
-    oldPos = oldState.position
-    oldDirection = oldState.direction
-    # RIGHT _ UP _ LEFT _ DOWN
-    newDirections = [(oldPos[0], oldPos[1] + 1, ">"),
-                     (oldPos[0] - 1, oldPos[1], "^"),
-                     (oldPos[0], oldPos[1] - 1, "<"),
-                     (oldPos[0] + 1, oldPos[1], "v")]
-    mazeln = maze.__len__()
-
-    nStates = []
-    for ndirection in filter(
-            lambda nd: (0 <= nd[0] < mazeln) and
-        (0 <= nd[1] < mazeln) and maze[nd[0]][nd[1]] != "X", newDirections):
-        nStates.append(
-            stateNode(position=(ndirection[0], ndirection[1]),
-                      direction=ndirection[2],
-                      path=oldState.path + [ndirection[2]],
-                      cost=oldState.cost +
-                      1 if ndirection[2] == oldDirection else oldState.cost +
-                      2))
-
-    return nStates
-
-def getSourceState(maze):
-    '''find start and return source node'''
-    pos = object
-    for i in range(len(maze)):
-        for j in range(len(maze)):
-            if maze[i][j] in ["<", ">", "^", "v"]:
-                pos = (i, j)
-                break
-    # make the state with the returned position
-    return stateNode(position=pos, direction=maze[pos[0]][pos[1]])
+    targetPos = findTarget(maze)
+    pos = state.position
+    return ((pos[0] - targetPos[0])**2 + (pos[1] - targetPos[1])**2)**0.5
 
 def findTarget(maze):
     '''find start and return source node'''
@@ -83,14 +26,45 @@ def findTarget(maze):
 
     return pos
 
-# return Euclidean distance to target from state position
-def euclideanDistance(maze, state):
+import searchAlgos  
+def generateStates(maze, oldState):
     '''
-    retrun the Euclidean Distance distance between a state and the target
+    Generates new states based on the current state and the maze
     '''
-    targetPos = findTarget(maze)
-    pos = state.position
-    return ((pos[0] - targetPos[0])**2 + (pos[1] - targetPos[1])**2)**0.5
+    oldPos = oldState.position
+    oldDirection = oldState.direction
+    # RIGHT _ UP _ LEFT _ DOWN
+    newDirections = [(oldPos[0], oldPos[1] + 1, ">"),
+                     (oldPos[0] - 1, oldPos[1], "^"),
+                     (oldPos[0], oldPos[1] - 1, "<"),
+                     (oldPos[0] + 1, oldPos[1], "v")]
+    random.shuffle(newDirections)
+    mazeln = maze.__len__()
+
+    nStates = []
+    for ndirection in filter(
+            lambda nd: (0 <= nd[0] < mazeln) and
+        (0 <= nd[1] < mazeln) and maze[nd[0]][nd[1]] != "X", newDirections):
+        nStates.append(
+            searchAlgos.stateNode(position=(ndirection[0], ndirection[1]),
+                      direction=ndirection[2],
+                      path=oldState.path + [ndirection[2]],
+                      cost=oldState.cost +
+                      1 if ndirection[2] == oldDirection else oldState.cost +
+                      2))
+    return nStates
+
+def getSourceState(maze):
+    '''find start and return source node'''
+    pos = object
+    for i in range(len(maze)):
+        for j in range(len(maze)):
+            if maze[i][j] in ["<", ">", "^", "v"]:
+                pos = (i, j)
+                break
+    # make the state with the returned position
+    return searchAlgos.stateNode(position=pos, direction=maze[pos[0]][pos[1]])
+
 
 
 # Utils
@@ -123,7 +97,7 @@ def Move(oldMaze, direction):
 
 
 def printMaze(maze, end="\n"):
-    numberOfDashes = 21
+    numberOfDashes = len(maze) * 4 + 1
     for row in maze:
         print("-" * numberOfDashes)
         print("|", end="")
@@ -134,11 +108,8 @@ def printMaze(maze, end="\n"):
     print("-" * numberOfDashes, end=end)
 
 
-
 from os import system, name as _name
 from time import sleep
-
-from searchAlgos import solve
 
 def showDemo(maze, algo="dfs"):
     ''' animate the solution to the console '''
@@ -153,7 +124,7 @@ def showDemo(maze, algo="dfs"):
 
     # dont permutate the original maze
     maze = deepcopy(maze)
-    sol = solve(maze, startState, checkGoal, generateStates, algo=algo, heuristic=None)
+    sol = searchAlgos.solve(maze, startState, checkGoal, generateStates, algo=algo, heuristic=None)
     printMaze(maze)
     for x in sol:
         print(x, ":", sol[x])
@@ -202,3 +173,60 @@ def humanSolve(maze):
             cost += mazeAndCost['cost']
             printMaze(mazeAndCost['maze'])
 
+def generateMaze(n):
+    ''' 
+    returns a generated new random maze
+    
+    '''
+    
+    maze = []
+    # generates random position
+    randPos = lambda : (random.randrange(n), random.randrange(n))
+
+    # make an empty maze
+    for _ in range(n):
+        maze.append([" " for k in range (n)])
+
+    # get different random positions for start and end
+    s, t = (0, 0), (0, 0)
+    while (s == t):
+        s = randPos()
+        t = randPos() 
+
+    # set the start and end at random    
+    maze[s[0]][s[1]] = random.choice(["<",">","v", "^"])
+    maze[t[0]][t[1]] = "#"
+
+    # save target direction
+    carDirection = maze[s[0]][s[1]] 
+
+
+    # run DFS and save the path to generate the maze
+    initial_state = getSourceState(maze)
+    sol = searchAlgos.solve(maze, initial_state, checkGoal, generateStates, algo="dfs", heuristic=None)
+
+    # make all the maze walls (unraechable)
+    for l in maze :
+        for i in range(len(l)): 
+            if l[i] == " ": l[i] = "X"
+
+    # clear bfs path to make the maze
+    startPos = s
+    maze[startPos[0]][startPos[1]] = " "
+    for direction in sol["path"]:
+        if direction == ">": startPos = (startPos[0], startPos[1] + 1)
+        elif direction == "^": startPos = (startPos[0] - 1, startPos[1])
+        elif direction == "<": startPos = (startPos[0], startPos[1] - 1 )
+        else : startPos =  (startPos[0] + 1, startPos[1])
+        maze[startPos[0]][startPos[1]] = " "
+    
+    # put the target and the car back
+    maze[s[0]][s[1]] = carDirection
+    maze[t[0]][t[1]] = "#"
+
+    return maze
+
+# TODO
+def displayMaze(maze):
+    '''  Display maze as gui '''
+    pass

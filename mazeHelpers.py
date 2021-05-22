@@ -175,3 +175,31 @@ def showDemo(maze, algo="dfs"):
         cls()
 
     printMaze(maze)
+
+def humanSolve(maze):
+    ''' solve the maze interactivly by a human'''
+    cost = 0
+    while 1:
+        printMaze(maze)
+        source = getSourceState(maze)
+        states = generateStates(maze, source)
+        directions = [state.direction for state in states]
+        print("available actions: " + ", ".join(directions))
+        direction = input("Enter Direction: ")
+        if direction not in directions:
+            print("Game Over"); return
+
+        else:
+            chosenState = [state for state in states if state.direction == direction][0]
+            if checkGoal(maze, chosenState):
+                mazeAndCost = Move(maze, direction)
+                maze = mazeAndCost['maze']
+                cost += mazeAndCost['cost']
+                printMaze(mazeAndCost['maze'])
+                print(f"You Win\nCost: {cost}")
+                return
+            mazeAndCost = Move(maze, direction)
+            maze = mazeAndCost['maze']
+            cost += mazeAndCost['cost']
+            printMaze(mazeAndCost['maze'])
+

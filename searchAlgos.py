@@ -14,10 +14,9 @@ class stateNode(object):
 
     def __hash__(self) -> int:
         return hash((self.position, self.direction))
-
+        
     def __eq__(self, other) -> bool:
-        return (self.position, self.direction) == (other.position,
-                                                   other.direction)
+        return (self.position, self.direction) == (other.position, other.direction)
 
     def __str__(self) -> str:
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
@@ -27,7 +26,6 @@ def solve(maze, initail_state, is_goal, next_state, algo="astar", heuristic=None
     algos = {"astar": astar, "dfs": dfs, "bfs": bfs, "ucs":ucs, "greedy": greedy}
     if heuristic:
         return algos[algo](maze, initail_state, is_goal, next_state, heuristic) if algo in algos else  {"Fail": "cant reach goal state"}
-
     return algos[algo](maze, initail_state, is_goal, next_state) if algo in algos else  {"Fail": "cant reach goal state"}
 
 def bfs(maze, initail_state, is_goal, generateStates):

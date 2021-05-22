@@ -1,4 +1,3 @@
-# The state class 
 class stateNode(object):
     def __init__(self, position, direction, path=[], cost=0) -> None:
         self.position = position

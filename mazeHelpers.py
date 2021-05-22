@@ -24,6 +24,11 @@ class stateNode(object):
     ''' generate random new maze & return the generated maze'''
     pass
 
+# TODO
+ def displayMaze(maze):
+    '''  Display maze to console or through a gui '''
+    pass
+
 def checkGoal(maze, state):
     ''' check if the current state position is the goal '''
     pos = state.position

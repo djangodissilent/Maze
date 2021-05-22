@@ -14,7 +14,7 @@ class stateNode(object):
 
     def __hash__(self) -> int:
         return hash((self.position, self.direction))
-        
+
     def __eq__(self, other) -> bool:
         return (self.position, self.direction) == (other.position, other.direction)
 
@@ -22,6 +22,7 @@ class stateNode(object):
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
 
 from mazeHelpers import euclideanDistance
+
 def solve(maze, initail_state, is_goal, next_state, algo="astar", heuristic=None):
     algos = {"astar": astar, "dfs": dfs, "bfs": bfs, "ucs":ucs, "greedy": greedy}
     if heuristic:

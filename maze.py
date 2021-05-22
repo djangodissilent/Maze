@@ -5,8 +5,8 @@ class Maze:
     '''
         A wraper around the search algorithms and the utillity fns
     '''
-    def __init__(self, dimension, checkGoal=checkGoal, generateStates=generateStates, heuristic=None) -> None:
-        self.maze = generateMaze(dimension)
+    def __init__(self, maze, checkGoal=checkGoal, generateStates=generateStates, heuristic=None) -> None:
+        self.maze = maze 
         self.checkGoal = checkGoal
         self.generateStates = generateStates
         self.heuristic = heuristic
@@ -16,12 +16,15 @@ class Maze:
         return printMaze(self.maze)
     
     def solveAi(self, algo="astar"):
+        '''solve maze by algorithm algo'''
         return solve(self.maze, self.startState, self.checkGoal, self.generateStates, algo=algo, heuristic=self.heuristic)
 
     def solveManual(self):
+        ''' find path manually '''
         return humanSolve(self.maze)
 
     def animate(self, algo="astar"):
+        ''' animate the path returned by algo '''
         return showDemo(self.maze, algo=algo)
 
     def Move(self, direction):
@@ -38,13 +41,14 @@ class Maze:
 # [" ", "X", "X", "X", "#"]
 # ]
 
-
-m = Maze(15)
-# print(m.solveAi("dfs"))
-# print(m.solveAi("bfs"))
-# print(m.solveAi("greedy"))
-# print(m.solveAi("ucs"))
-# print(m.solveAi("astar"))
+maze = generateMaze(5)
+m = Maze(maze)
+m.printMaze()
+print(m.solveAi("dfs"))
+print(m.solveAi("bfs"))
+print(m.solveAi("greedy"))
+print(m.solveAi("ucs"))
+print(m.solveAi("astar"))
 
 # animate solution bath defualt is astar
 m.animate()

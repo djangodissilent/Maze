@@ -38,6 +38,8 @@ def generateStates(maze, oldState):
                      (oldPos[0] - 1, oldPos[1], "^"),
                      (oldPos[0], oldPos[1] - 1, "<"),
                      (oldPos[0] + 1, oldPos[1], "v")]
+    
+    # shuffle directions 
     random.shuffle(newDirections)
     mazeln = maze.__len__()
 
@@ -65,9 +67,7 @@ def getSourceState(maze):
     # make the state with the returned position
     return searchAlgos.stateNode(position=pos, direction=maze[pos[0]][pos[1]])
 
-
-
-# Utils
+# =============== Utils =========================
 from copy import deepcopy 
 
 def Move(oldMaze, direction):
@@ -95,6 +95,7 @@ def Move(oldMaze, direction):
     else:
         return "Failure: Can't Move There"
 
+import colorama
 
 def printMaze(maze, end="\n"):
     numberOfDashes = len(maze) * 4 + 1
@@ -102,7 +103,10 @@ def printMaze(maze, end="\n"):
         print("-" * numberOfDashes)
         print("|", end="")
         for c in row:
-            print(f" {c} |", end="")
+            if c == "X": print(f"{colorama.Style.NORMAL} {colorama.Fore.LIGHTBLACK_EX}{c}{colorama.Fore.RESET}{colorama.Style.RESET_ALL} |", end="")
+            elif c == "#": print(f"{colorama.Style.BRIGHT} {colorama.Fore.GREEN}{c}{colorama.Fore.RESET}{colorama.Style.RESET_ALL} |", end="")
+            elif c in ["<", ">", "^", "v"] : print(f"{colorama.Style.BRIGHT} {colorama.Fore.RED}{c}{colorama.Fore.RESET}{colorama.Style.RESET_ALL} |", end="")
+            else: print(f" {c} |", end="")
 
         print()
     print("-" * numberOfDashes, end=end)
@@ -173,6 +177,7 @@ def humanSolve(maze):
             cost += mazeAndCost['cost']
             printMaze(mazeAndCost['maze'])
 
+# Maze generation using Dfs
 def generateMaze(n):
     ''' 
     returns a generated new random maze

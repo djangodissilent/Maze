@@ -19,6 +19,11 @@ class stateNode(object):
     def __str__(self) -> str:
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
 
+# TODO
+ def generateMaze(n):
+    ''' generate random new maze & return the generated maze'''
+    pass
+
 def checkGoal(maze, state):
     ''' check if the current state position is the goal '''
     pos = state.position

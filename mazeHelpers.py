@@ -20,12 +20,12 @@ class stateNode(object):
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
 
 # TODO
- def generateMaze(n):
+def generateMaze(n):
     ''' generate random new maze & return the generated maze'''
     pass
 
 # TODO
- def displayMaze(maze):
+def displayMaze(maze):
     '''  Display maze to console or through a gui '''
     pass
 

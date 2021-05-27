@@ -51,6 +51,3 @@ m = Maze(maze)
 
 # animate solution bath defualt is astar
 m.animate(algo="ucs")
-
-# solve by hand
-# m.solveManual()

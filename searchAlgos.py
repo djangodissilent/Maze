@@ -3,7 +3,6 @@ from heapq import heapify, heappop, heappush
 
 class stateNode(object):
     def __init__(self, position, direction, path=[], cost=0) -> None:
-        super().__init__()
         self.position = position
         self.direction = direction
         self.path = path

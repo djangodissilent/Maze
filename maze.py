@@ -1,4 +1,4 @@
-from mazeHelpers import checkGoal, getSourceState, generateStates, printMaze, Move, showDemo, humanSolve, generateMaze, generateMazeRandom
+from mazeHelpers import checkGoal, getSourceState, generateStates, printMaze, Move, showDemo, generateMazeRandom
 from searchAlgos import solve
 
 class Maze:
@@ -18,9 +18,9 @@ class Maze:
         '''solve maze by algorithm algo'''
         return solve(self.maze, self.startState, self.checkGoal, self.generateStates, algo=algo, heuristic=heuristic)
 
-    def solveManual(self):
-        ''' find path manually '''
-        return humanSolve(self.maze)
+    # def solveManual(self):
+    #     ''' find path manually '''
+    #     return humanSolve(self.maze)
 
     def animate(self, algo="astar"):
         ''' animate the path returned by algo '''
@@ -39,7 +39,7 @@ sampleMaze = [
 [" ", "X", "X", "X", "#"]
 ]
 
-maze = generateMazeRandom(5)
+maze = generateMazeRandom(15)
 m = Maze(maze)
 
 # m.printMaze()

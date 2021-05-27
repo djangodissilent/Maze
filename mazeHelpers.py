@@ -46,7 +46,7 @@ def generateStates(maze, oldState):
     # shuffle directions
     # random.shuffle(newDirections)
     mazeln = maze.__len__()
-    
+
     nStates = []
     for ndirection in filter(
             lambda nd: (0 <= nd[0] < mazeln) and
@@ -74,8 +74,8 @@ def getSourceState(maze):
 
 
 # =============== Utils =========================
-from copy import deepcopy
 
+from copy import deepcopy
 
 def Move(oldMaze, direction):
     '''
@@ -83,6 +83,7 @@ def Move(oldMaze, direction):
     based on the old state
     dosent change given maze 
     '''
+    
     maze = deepcopy(oldMaze)
     oldState = getSourceState(maze)
     reachableStates = generateStates(maze, oldState)
@@ -196,100 +197,9 @@ def showDemo(maze, algo="dfs"):
         if x != "visited":
             print(x, ":", sol[x])
 
-
-def humanSolve(maze):
-    ''' solve the maze interactivly by a human'''
-    cost = 0
-    while 1:
-        printMaze(maze)
-        source = getSourceState(maze)
-        states = generateStates(maze, source)
-        directions = [state.direction for state in states]
-        print("available actions: " + ", ".join(directions))
-        direction = input("Enter Direction: ")
-        if direction not in directions:
-            print("Game Over")
-            return
-
-        else:
-            chosenState = [
-                state for state in states if state.direction == direction
-            ][0]
-            if checkGoal(maze, chosenState):
-                mazeAndCost = Move(maze, direction)
-                maze = mazeAndCost['maze']
-                cost += mazeAndCost['cost']
-                printMaze(mazeAndCost['maze'])
-                print(f"You Win\nCost: {cost}")
-                return
-            mazeAndCost = Move(maze, direction)
-            maze = mazeAndCost['maze']
-            cost += mazeAndCost['cost']
-            printMaze(mazeAndCost['maze'])
-
-
-# Maze generation using Dfs
-def generateMaze(n):
-    ''' 
-    returns a generated new random maze
-    
-    '''
-
-    maze = []
-    # generates random position
-    randPos = lambda: (random.randrange(n), random.randrange(n))
-
-    # make an empty maze
-    for _ in range(n):
-        maze.append([" " for k in range(n)])
-
-    # get different random positions for start and end
-    s, t = (0, 0), (0, 0)
-    while (s == t):
-        s = randPos()
-        t = randPos()
-
-    # set the start and end at random
-    maze[s[0]][s[1]] = random.choice(["<", ">", "v", "^"])
-    maze[t[0]][t[1]] = "#"
-
-    # save target direction
-    carDirection = maze[s[0]][s[1]]
-
-    # run DFS and save the path to generate the maze
-    initial_state = getSourceState(maze)
-    sol = searchAlgos.solve(maze,
-                            initial_state,
-                            checkGoal,
-                            generateStates,
-                            algo="dfs",
-                            heuristic=None)
-
-    # make all the maze walls (unraechable)
-    for l in maze:
-        for i in range(len(l)):
-            if l[i] == " ": l[i] = "X"
-
-    # clear bfs path to make the maze
-    startPos = s
-    maze[startPos[0]][startPos[1]] = " "
-    for direction in sol["path"]:
-        if direction == ">": startPos = (startPos[0], startPos[1] + 1)
-        elif direction == "^": startPos = (startPos[0] - 1, startPos[1])
-        elif direction == "<": startPos = (startPos[0], startPos[1] - 1)
-        else: startPos = (startPos[0] + 1, startPos[1])
-        maze[startPos[0]][startPos[1]] = " "
-
-    # put the target and the car back
-    maze[s[0]][s[1]] = carDirection
-    maze[t[0]][t[1]] = "#"
-
-    return maze
-
-
 def generateMazeRandom(n):
     nMaze = [[(random.choice([" ", " ", "X"])) for i in range(n)]
-             for j in range(n)]
+             for _ in range(n)]
     # get different random positions for start and end
     s, t = (0, 0), (0, 0)
     randPos = lambda: (random.randrange(n), random.randrange(n))
@@ -305,4 +215,93 @@ def generateMazeRandom(n):
 # TODO
 def displayMaze(maze):
     '''  Display maze as gui '''
+
+# def humanSolve(maze):
+#     ''' solve the maze interactivly by a human'''
+#     cost = 0
+#     while 1:
+#         printMaze(maze)
+#         source = getSourceState(maze)
+#         states = generateStates(maze, source)
+#         directions = [state.direction for state in states]
+#         print("available actions: " + ", ".join(directions))
+#         direction = input("Enter Direction: ")
+#         if direction not in directions:
+#             print("Game Over")
+#             return
+
+#         else:
+#             chosenState = [
+#                 state for state in states if state.direction == direction
+#             ][0]
+#             if checkGoal(maze, chosenState):
+#                 mazeAndCost = Move(maze, direction)
+#                 maze = mazeAndCost['maze']
+#                 cost += mazeAndCost['cost']
+#                 printMaze(mazeAndCost['maze'])
+#                 print(f"You Win\nCost: {cost}")
+#                 return
+#             mazeAndCost = Move(maze, direction)
+#             maze = mazeAndCost['maze']
+#             cost += mazeAndCost['cost']
+#             printMaze(mazeAndCost['maze'])
+
+
+# # Maze generation using Dfs
+# def generateMaze(n):
+#     ''' 
+#     returns a generated new random maze
+    
+#     '''
+
+#     maze = []
+#     # generates random position
+#     randPos = lambda: (random.randrange(n), random.randrange(n))
+
+#     # make an empty maze
+#     for _ in range(n):
+#         maze.append([" " for k in range(n)])
+
+#     # get different random positions for start and end
+#     s, t = (0, 0), (0, 0)
+#     while (s == t):
+#         s = randPos()
+#         t = randPos()
+
+#     # set the start and end at random
+#     maze[s[0]][s[1]] = random.choice(["<", ">", "v", "^"])
+#     maze[t[0]][t[1]] = "#"
+
+#     # save target direction
+#     carDirection = maze[s[0]][s[1]]
+
+#     # run DFS and save the path to generate the maze
+#     initial_state = getSourceState(maze)
+#     sol = searchAlgos.solve(maze,
+#                             initial_state,
+#                             checkGoal,
+#                             generateStates,
+#                             algo="dfs",
+#                             heuristic=None)
+
+#     # make all the maze walls (unraechable)
+#     for l in maze:
+#         for i in range(len(l)):
+#             if l[i] == " ": l[i] = "X"
+
+#     # clear bfs path to make the maze
+#     startPos = s
+#     maze[startPos[0]][startPos[1]] = " "
+#     for direction in sol["path"]:
+#         if direction == ">": startPos = (startPos[0], startPos[1] + 1)
+#         elif direction == "^": startPos = (startPos[0] - 1, startPos[1])
+#         elif direction == "<": startPos = (startPos[0], startPos[1] - 1)
+#         else: startPos = (startPos[0] + 1, startPos[1])
+#         maze[startPos[0]][startPos[1]] = " "
+
+#     # put the target and the car back
+#     maze[s[0]][s[1]] = carDirection
+#     maze[t[0]][t[1]] = "#"
+
+#     return maze
     pass

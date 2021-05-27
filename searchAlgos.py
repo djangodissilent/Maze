@@ -13,10 +13,10 @@ class stateNode(object):
         return self.cost < other.cost
 
     def __hash__(self) -> int:
-        return hash((self.position, self.direction))
+        return hash(self.position)
 
     def __eq__(self, other) -> bool:
-        return (self.position, self.direction) == (other.position, other.direction)
+        return self.position == other.position
 
     def __str__(self) -> str:
         return f"position: {self.position}\ndirection: {self.direction}\ncost: {self.cost}\npath: {self.path}\n"
@@ -35,14 +35,14 @@ def bfs(maze, initail_state, is_goal, generateStates):
     fringe.append(stateNode(initail_state.position, initail_state.direction))
     while fringe.__len__():
         current_state = fringe.popleft()
-        if is_goal(maze, current_state):
-            return { "path": current_state.path, "relaxed":len(visited), "cost": current_state.cost}
         if current_state in visited:
             continue
         else:
             visited[current_state] = True
+        if is_goal(maze, current_state):
+            return { "path": current_state.path, "relaxed":len(visited), "cost": current_state.cost, "visited":visited.keys()}
         for newState in generateStates(maze, current_state):
-            fringe.append(newState)
+            if newState not in visited: fringe.append(newState) 
 
     return {"Fail": "cant reach goal state"}
 
@@ -52,14 +52,14 @@ def dfs(maze, initail_state, is_goal, generateStates):
 
     while fringe.__len__():
         current_state = fringe.pop()
-        if is_goal(maze, current_state):
-            return { "path": current_state.path, "relaxed":len(visited), "cost": current_state.cost}
         if current_state in visited:
             continue
         else:
             visited[current_state] = True
+        if is_goal(maze, current_state):
+            return { "path": current_state.path, "relaxed":len(visited), "cost": current_state.cost, "visited": visited}
         for newState in generateStates(maze, current_state):
-            fringe.append(newState)
+            if newState not in visited: fringe.append(newState)
             
     return {"Fail": "cant reach goal state"}
 
@@ -83,15 +83,16 @@ def bestFirst(maze, initail_state, is_goal, generateStates, f = lambda self, oth
     heapify(fringe)
     # override the defualt dunderMethod at runtime 
     stateNode.__lt__ = f
+    
     while fringe.__len__():
         # minimize from heuristic pov and return the state
         current_state = heappop(fringe)
-        if is_goal(maze, current_state):
-            return { "path": current_state.path, "relaxed":len(visited), 'cost': current_state.cost}
         if current_state in visited:
             continue
         else:
             visited[current_state] = True
+        if is_goal(maze, current_state):
+            return { "path": current_state.path, "relaxed":len(visited), 'cost': current_state.cost, "visited":visited}
         for newState in generateStates(maze, current_state):
-            heappush(fringe, newState)
+            if newState not in visited:heappush(fringe, newState)
     return {"Fail": "cant reach goal state"}
